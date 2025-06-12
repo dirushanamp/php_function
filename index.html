@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Persistent PHP Function Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px;
+      font-size: 14px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>PHP String Functions (Persistent Storage)</h2>
+
+  <input type="text" id="functionName" placeholder="Function (e.g., strlen())" />
+  <input type="text" id="description" placeholder="Description" />
+  <input type="text" id="example" placeholder="Example code" />
+  <button onclick="addFunction()">Add Function</button>
+
+  <table id="functionTable">
+    <thead>
+      <tr>
+        <th>Function</th>
+        <th>Description</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const STORAGE_KEY = 'phpFunctionsData';
+
+    // Load data from localStorage or use default hardcoded data
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+      {
+        function: "strlen()",
+        description: "Get string length",
+        example: "echo strlen('Hello'); // 5"
+      },
+      {
+        function: "strtoupper()",
+        description: "Convert string to uppercase",
+        example: "echo strtoupper('hello'); // HELLO"
+      },
+      {
+        function: "strtolower()",
+        description: "Convert string to lowercase",
+        example: "echo strtolower('HELLO'); // hello"
+      }
+    ];
+
+    // Render the table rows
+    function renderTable() {
+      const tbody = document.querySelector("#functionTable tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.function}</td>
+          <td>${item.description}</td>
+          <td><code>${item.example}</code></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Add a new function and update localStorage
+    function addFunction() {
+      const func = document.getElementById("functionName").value.trim();
+      const desc = document.getElementById("description").value.trim();
+      const example = document.getElementById("example").value.trim();
+
+      if (!func || !desc || !example) {
+        alert("Please fill in all fields!");
+        return;
+      }
+
+      data.push({ function: func, description: desc, example: example });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+      document.getElementById("functionName").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("example").value = "";
+
+      renderTable();
+    }
+
+    // Initial table render on page load
+    window.onload = renderTable;
+  </script>
+
+</body>
+</html>
 
